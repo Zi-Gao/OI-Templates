@@ -1,1 +1,1 @@
-OI 个人模板。1
+OI 个人模板。使用 gen.py 一键生成 Markdown 格式的模板。

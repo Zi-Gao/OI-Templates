@@ -1,0 +1,4 @@
+#define lc (tree[(p)].lChild)
+#define rc (tree[(p)].rChild)
+#define PSEGTREE_DATA_TYPE int
+const int PSEG_DATA_SIZE=1000010;const int PSEG_SIZE=PSEG_DATA_SIZE<<5;struct PSEGTREE_NODE{PSEGTREE_DATA_TYPE data;int lChild,rChild;};struct PSEGTREE{PSEGTREE_NODE tree[PSEG_SIZE];int root[PSEG_SIZE],tot;int getMem(){return tot++;}int build(int l,int r,PSEGTREE_DATA_TYPE*data){int p=getMem();if(l==r)tree[p].data=data[l];else{int mid=(l+r)>>1;tree[p].lChild=build(l,mid,data);tree[p].rChild=build(mid+1,r,data);}return p;}PSEGTREE_DATA_TYPE query(int p,int pos,int l,int r){if(l==r)return tree[p].data;int mid=(l+r)>>1;return pos<=mid?query(lc,pos,l,mid):query(rc,pos,mid+1,r);}int update(int old,int pos,int l,int r,PSEGTREE_DATA_TYPE c){int p=getMem();tree[p]=tree[old];if(l==r)tree[p].data=c;else{int mid=(l+r)>>1;if(pos<=mid)tree[p].lChild=update(tree[p].lChild,pos,l,mid,c);else tree[p].rChild=update(tree[p].rChild,pos,mid+1,r,c);}return p;}}pseg;

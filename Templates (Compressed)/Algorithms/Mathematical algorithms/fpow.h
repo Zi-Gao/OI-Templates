@@ -1,0 +1,2 @@
+#define FPOW_DATA_TYPE long long
+const int FPOW_blocklen_k=16;const int FPOW_blocklen=1<<FPOW_blocklen_k;const int FPOW_blockmask=FPOW_blocklen-1;struct FPOW{FPOW_DATA_TYPE f[FPOW_blocklen],g[FPOW_blocklen],FPOW_MOD;void init(FPOW_DATA_TYPE base,FPOW_DATA_TYPE mod){register int i;f[0]=g[0]=1;FPOW_MOD=mod;for(i=1;i<FPOW_blocklen;++i)f[i]=f[i-1]*base%FPOW_MOD;g[1]=f[FPOW_blockmask]*base%FPOW_MOD;for(i=2;i<FPOW_blocklen;++i)g[i]=g[i-1]*g[1]%FPOW_MOD;return;}inline FPOW_DATA_TYPE operator()(register FPOW_DATA_TYPE p){return{f[p&FPOW_blockmask]*g[p>>FPOW_blocklen_k]%FPOW_MOD};}};

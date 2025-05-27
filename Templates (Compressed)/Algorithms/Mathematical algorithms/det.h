@@ -1,0 +1,2 @@
+#define DET_TYPE long long
+DET_TYPE getDet(std::vector<DET_TYPE>*a,int n,const DET_TYPE mod){register int i,j,k;register char dt=1;register long long ans=1,x;for(i=0;i<n;++i)for(j=i+1;j<n;++j){while(a[i][i]){x=a[j][i]/a[i][i];for(k=i;k<n;++k)a[j][k]=(a[j][k]+mod-x*a[i][k]%mod)%mod;std::swap(a[i],a[j]),dt^=1;}std::swap(a[i],a[j]),dt^=1;}for(i=0;i<n;++i)(ans*=a[i][i])%=mod;return(mod+(dt?ans:(mod-ans)))%mod;}

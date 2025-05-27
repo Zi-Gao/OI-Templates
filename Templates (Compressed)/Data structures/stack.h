@@ -1,0 +1,2 @@
+#define STACK_DATA_TYPE int
+const int STACK_SIZE=100000;struct STACK{STACK_DATA_TYPE _null,s[STACK_SIZE];int s_top;STACK(){s_top=0;return;}void push(STACK_DATA_TYPE in){s[s_top]=in;++s_top;return;}void pop(){--s_top;return;}void pop(int in){s_top-=in;return;}STACK_DATA_TYPE top(){return s[s_top-1];}void clear(){s_top=0;}bool empty(){if(s_top==0){return true;}else{return false;}}int size(){return s_top;}STACK_DATA_TYPE read(int in){return s[in];}};

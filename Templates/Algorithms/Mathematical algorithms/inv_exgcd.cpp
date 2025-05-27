@@ -1,0 +1,18 @@
+#define INV_DATA_TYPE long long
+INV_DATA_TYPE exgcd(INV_DATA_TYPE a,INV_DATA_TYPE b,INV_DATA_TYPE &x,INV_DATA_TYPE &y){
+    if(!b){
+        x=1;
+        y=0;
+        return a;
+    }
+    INV_DATA_TYPE d=exgcd(b,a%b,y,x);
+    y-=a/b*x;
+    return d;
+}
+
+INV_DATA_TYPE inv(INV_DATA_TYPE n,INV_DATA_TYPE p){
+    INV_DATA_TYPE x,y;
+    exgcd(n,p,x,y);
+    x%=p;
+    return x>=0?x:x+p;
+}

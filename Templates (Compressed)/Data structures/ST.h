@@ -1,0 +1,4 @@
+#define ln(x)(31^__builtin_clz(x))
+#define ST_DATA_TYPE int
+#define ST_TYPE >
+const int ST_MAXI=100010;const int ST_MAXJ=20;ST_DATA_TYPE ST_CALC(ST_DATA_TYPE a,ST_DATA_TYPE b){return a ST_TYPE b?a:b;}struct ST{ST_DATA_TYPE f[ST_MAXJ][ST_MAXI];int L,R;void build(ST_DATA_TYPE*data,register int l,register int r){register int i,j,k=ln((R=r)-(L=l)+1),size=r-l+1;for(i=0;i<size;++i)f[0][i]=data[i+l];for(j=1;j<=k;++j)for(i=0;i<size-(1<<j)+1;++i)f[j][i]=ST_CALC(f[j-1][i],f[j-1][i+(1<<(j-1))]);return;}inline ST_DATA_TYPE query(register int l,register int r){l-=L,r-=L;register int k=ln(r-l+1);return ST_CALC(f[k][l],f[k][r-(1<<k)+1]);}};

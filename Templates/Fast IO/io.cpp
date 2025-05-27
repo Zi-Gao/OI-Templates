@@ -1,0 +1,69 @@
+#define getu(x) typename std::make_unsigned<x>::type
+struct IO {
+    static const int inSZ = 1 << 19;
+    char inBuf[inSZ], *in1, *in2;
+    template<class T> inline __attribute((always_inline))
+    T read() {
+        if (in1 > inBuf + inSZ - 32) [[unlikely]] {
+            auto len = in2 - in1;
+            memcpy(inBuf, in1, len);
+            in1 = inBuf, in2 = inBuf + len;
+            in2 += fread(in2, 1, inSZ - len, stdin);
+            if (in2 != inBuf + inSZ) *in2 = 0;
+        }
+        getu(T) res = 0;
+        unsigned char c;
+        bool neg = 0;
+        while ((c = *in1++) < 48) neg = c == 45;
+        while (res = res * 10 + (c - 48), (c = *in1++) >= 48);
+        return neg ? -res : res;
+    }
+	inline __attribute((always_inline)) char readCh(){
+		if (in1 > inBuf + inSZ - 32) [[unlikely]] {
+            auto len = in2 - in1;
+            memcpy(inBuf, in1, len);
+            in1 = inBuf, in2 = inBuf + len;
+            in2 += fread(in2, 1, inSZ - len, stdin);
+            if (in2 != inBuf + inSZ) *in2 = 0;
+        }
+		return *in1++;
+	}
+    static const int outSZ = 1 << 21;
+    char outBuf[outSZ], *out;
+    template<class T> inline __attribute((always_inline))
+    void write(const T &y) {
+        if (out > outBuf + outSZ - 32) [[unlikely]]
+            fwrite(outBuf, 1, out - outBuf, stdout), out = outBuf;
+        if (!y) return *out++ = 48, void();
+		getu(T) x=y;
+        if (y < 0) *out++ = 45, x = -x;
+        alignas(8) const char* digits =
+        "0001020304050607080910111213141516171819"
+        "2021222324252627282930313233343536373839"
+        "4041424344454647484950515253545556575859"
+        "6061626364656667686970717273747576777879"
+        "8081828384858687888990919293949596979899";
+        alignas(64) static char buf[20];
+        char* p = buf + 20;
+        while (x >= 10) memcpy(p -= 2, digits + x % 100 * 2, 2), x /= 100;
+        if (x) *--p = 48 + x;
+        auto len = buf + 20 - p;
+        memcpy(out, p, len), out += len;
+    }
+	inline __attribute((always_inline)) void printCh(char c){
+		if (out > outBuf + outSZ - 32) [[unlikely]]
+            fwrite(outBuf, 1, out - outBuf, stdout), out = outBuf;
+		*out++=c;
+	}
+    void init() {
+        in1 = in2 = inBuf + inSZ;
+        out = outBuf;
+    }
+    ~IO() { fwrite(outBuf, 1, out - outBuf, stdout); }
+} IO;
+template<class T = int> inline T read() {return IO.read<T>();}
+template<class... Args> inline void read(Args&... args) {((args = IO.read<Args>()), ...);}
+template<class T> inline void print(T x, char c) {IO.write(x), *IO.out++ = c;}
+template<class T> inline void print(T x) {IO.write(x);}
+inline __attribute((always_inline)) void printCh(char c) {return IO.printCh(c);}
+inline __attribute((always_inline)) char readCh() {return IO.readCh();}

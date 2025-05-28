@@ -88,3 +88,6 @@ struct LazyMontgomeryModInt {
 
     static constexpr u32 get_mod() { return mod; }
 };
+
+using mint = ArbitraryLazyMontgomeryModIntBase<int, unsigned int, long long, unsigned long long, 1>;
+using mint64 = ArbitraryLazyMontgomeryModIntBase<long long, unsigned long long, __int128_t, __uint128_t, 1>;

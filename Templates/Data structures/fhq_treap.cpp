@@ -13,7 +13,7 @@ struct FHQTreap{
 
     void build(int n){
         mt=std::mt19937(time(0));
-        register int i;
+        int i;
         for(i=0;i<=n;++i) mem[i]=i;
         top=n;
         root=0;
@@ -73,7 +73,7 @@ struct FHQTreap{
         return pos;
     }
     void insert_rank_n(T *data,int cnt,int rk){
-        register int i;
+        int i;
         int x,y=0,z;
         split_rank(root,x,z,rk);
         for(i=0;i<cnt;++i) y=merge(y,getNode(data[i]));

@@ -73,7 +73,7 @@ namespace POL{
         return;
     }
 
-    struct POL{
+    struct Poly{
         std::vector<u32> items;
 
         forceIl void push_back(u32 x){items.push_back(x);}
@@ -86,51 +86,51 @@ namespace POL{
         forceIl u32& operator [] (const int x){return items[x];}
         forceIl u32 operator [] (const int x) const {return items[x];}
 
-        forceIl POL operator + (const POL &o) const{
+        forceIl Poly operator + (const Poly &o) const{
             int i;
-            POL res;
+            Poly res;
             res=*this;
             res.resize(std::max(size(),o.size()));
             for(i=0;i<o.size();++i) reduce(res[i]+=o[i]);
             return res;
         }
-        forceIl POL operator + (const u32 &o) const{
-            POL res=*this;
+        forceIl Poly operator + (const u32 &o) const{
+            Poly res=*this;
             reduce(res[0]+=o);
             return res;
         }
-        forceIl friend POL operator + (const u32 &o,const POL &x){return x+o;}
-        forceIl POL operator - (const POL &o) const{
+        forceIl friend Poly operator + (const u32 &o,const Poly &x){return x+o;}
+        forceIl Poly operator - (const Poly &o) const{
             int i;
-            POL res;
+            Poly res;
             res=*this;
             res.resize(std::max(size(),o.size()));
             for(i=0;i<o.size();++i) reduce(res[i]+=NTTp-o[i]);
             return res;
         }
-        forceIl POL operator - (const u32 &o) const{
-            POL res=*this;
+        forceIl Poly operator - (const u32 &o) const{
+            Poly res=*this;
             reduce(res[0]+=NTTp-o);
             return res;
         }
-        forceIl friend POL operator - (const u32 &o,POL x){
+        forceIl friend Poly operator - (const u32 &o,Poly x){
             for(auto &i:x.items) reduce(i=NTTp-i);
             reduce(x[0]+=o);
             return x;
         }
-        forceIl friend POL operator * (const u32 &o,const POL &x){return o*x;}
-        forceIl friend POL operator / (const u32 &o,const POL &x){return x.inv()*o;}
+        forceIl friend Poly operator * (const u32 &o,const Poly &x){return o*x;}
+        forceIl friend Poly operator / (const u32 &o,const Poly &x){return x.inv()*o;}
 
-        forceIl POL deriv() const{
-            POL res=*this;
+        forceIl Poly deriv() const{
+            Poly res=*this;
             if(items.empty()) return res;
             int i;
             for(i=1;i<size();++i) res[i-1]=(u64)res[i]*i%NTTp;
             res.pop_back();
             return res;
         }
-        forceIl POL integ() const{
-            POL res=*this;
+        forceIl Poly integ() const{
+            Poly res=*this;
             if(items.empty()) return res;
             int i;
             initInv(size());
@@ -139,27 +139,27 @@ namespace POL{
             return res;
         }
 
-        forceIl POL xPow(int k,int len){
-            POL res;
+        forceIl Poly xPow(int k,int len){
+            Poly res;
             res.resize(len);
             for(int i=0;i*k<len;++i) res[i*k]=items[i];
             return res;
         }
-        forceIl POL xPow(int k){return xPow(k,(size()-1)*k+1);}
+        forceIl Poly xPow(int k){return xPow(k,(size()-1)*k+1);}
         
-        forceIl POL shift(int k,int len){
-            POL res;
+        forceIl Poly shift(int k,int len){
+            Poly res;
             res.resize(len);
             for(int i=0;i+k<len;++i) res[i+k]=items[i];
             return res;
         }
-        forceIl POL shift(int k){return shift(k,size()+k);}
+        forceIl Poly shift(int k){return shift(k,size()+k);}
 
-        forceIl friend POL operator * (POL A,POL B){
+        forceIl friend Poly operator * (Poly A,Poly B){
             int i,j,len=A.size()+B.size();
 
             if((i64)A.size()*B.size()<=(len*ln2(len)*6)){
-                POL res;
+                Poly res;
                 res.resize(len);
                 for(i=0;i<A.size();++i) for(j=0;j<B.size();++j)
                     res[i+j]=(res[i+j]+(u64)A[i]*B[j])%NTTp;
@@ -175,13 +175,13 @@ namespace POL{
                 return A;
             }
         }
-        forceIl POL operator * (const u32 o) const{
-            POL res=*this;
+        forceIl Poly operator * (const u32 o) const{
+            Poly res=*this;
             for(auto &item:res.items) item=(u64)item*o%NTTp;
             return res;
         }
 
-        forceIl friend POL operator / (POL F,POL G){
+        forceIl friend Poly operator / (Poly F,Poly G){
             int n=F.size(),m=G.size();
             F.reverse(),G.reverse();
             F.resize(n-m+1);
@@ -191,29 +191,29 @@ namespace POL{
             F.reverse();
             return F;
         }
-        forceIl POL operator / (u32 o) const{
-            POL res=*this;
+        forceIl Poly operator / (u32 o) const{
+            Poly res=*this;
             o=invNum(o);
             for(auto &item:res.items) item=(u64)item*o%NTTp;
             return res;
         }
 
-        forceIl POL operator % (const POL &G) const{
-            POL res=*this-G*(*this/G);
+        forceIl Poly operator % (const Poly &G) const{
+            Poly res=*this-G*(*this/G);
             res.resize(G.size()-1);
             return res;
         }
-        forceIl std::pair<POL,POL> getDiv(const POL &G) const{
-            POL P=*this/G;
-            POL Q=*this-P*G;
+        forceIl std::pair<Poly,Poly> getDiv(const Poly &G) const{
+            Poly P=*this/G;
+            Poly Q=*this-P*G;
             Q.resize(G.size()-1);
             return {P,Q};
         }
 
-        forceIl POL inv() const{
+        forceIl Poly inv() const{
             int i,len,L=1,l,j,k;
             u32 w1,w,x,y;
-            POL A,B;
+            Poly A,B;
             while(L<size()) L<<=1;
             B.resize(1);
             B[0]=invNum(items[0]);
@@ -233,14 +233,14 @@ namespace POL{
             return B;
         }
 
-        forceIl POL ln() const{
-            POL res=(deriv()*inv()).integ();
+        forceIl Poly ln() const{
+            Poly res=(deriv()*inv()).integ();
             res.resize(size());
             return res;
         }
-        forceIl POL exp() const{
+        forceIl Poly exp() const{
             int i=0,len,L=1;
-            POL A,B;
+            Poly A,B;
             while(L<size()) L<<=1;
             B.resize(1);
             B[0]=1;
@@ -252,10 +252,10 @@ namespace POL{
             B.resize(size());
             return B;
         }
-        forceIl POL pow(u32 e,u32 ephi,int p) const{
+        forceIl Poly pow(u32 e,u32 ephi,int p) const{
             int i;
             u32 x,invX;
-            POL res=*this;
+            Poly res=*this;
 
             invX=invNum(x=items[p]);
             res.items.erase(res.items.begin(),res.items.begin()+p);
@@ -273,14 +273,14 @@ namespace POL{
 
             return res;
         }
-        forceIl POL operator ^ (const char *s) const{
+        forceIl Poly operator ^ (const char *s) const{
             int i=0,p;
             u32 e=0,ephi=0;
             for(p=0;p<size();++p)
                 if(items[p]) break;
             while(s[i]){
                 if((e*10+(s[i]&15))*p>=size()){
-                    POL res;
+                    Poly res;
                     res.resize(size());
                     return res;
                 }
@@ -289,34 +289,34 @@ namespace POL{
                 ++i;
             }
             if(p==size()){
-                POL res;
+                Poly res;
                 res.resize(1,1);
                 res.resize(size());
                 return res;
             }
             return pow(e,ephi,p);
         }
-        forceIl POL operator ^ (u32 e) const{
+        forceIl Poly operator ^ (u32 e) const{
             int p;
             for(p=0;p<size();++p)
                 if(items[p]) break;
             if(p==size()&&e==0){
-                POL res;
+                Poly res;
                 res.resize(1,1);
                 res.resize(size());
                 return res;
             }
             if(p&&(e>=size()||e*p>=size())){
-                POL res;
+                Poly res;
                 res.resize(size());
                 return res;
             }
             return pow(e%NTTp,e%NTTphi,p);
         }
 
-        forceIl POL sqrt(){
+        forceIl Poly sqrt(){
             int i=0,len,L=1;
-            POL A,B;
+            Poly A,B;
             while(L<size()) L<<=1;
             B.resize(1,1);
             for(len=1;len<=L;len<<=1){
@@ -328,7 +328,7 @@ namespace POL{
             return B;
         }
 
-        friend void mul(int p,int l,int r,std::vector<u32> &x,std::vector<POL> &pols){
+        friend void mul(int p,int l,int r,std::vector<u32> &x,std::vector<Poly> &pols){
             if(l==r){
                 if(pols.size()<=p) pols.resize(p+1);
                 pols[p].push_back(NTTp-x[l]);
@@ -341,7 +341,7 @@ namespace POL{
             pols[p].pop_back();
         }
 
-        forceIl POL subMul(POL a,POL b) const {
+        forceIl Poly subMul(Poly a,Poly b) const {
             int i;
             int n=a.size();
             int m=b.size();
@@ -350,7 +350,7 @@ namespace POL{
             for(i=0;i<n;++i) a[i]=b[i+m-1];
             return a;
         }
-        void initVals(int p,int l,int r,std::vector<u32> &x,std::vector<POL> &pols) const {
+        void initVals(int p,int l,int r,std::vector<u32> &x,std::vector<Poly> &pols) const {
             if(l==r){
                 if(pols.size()<=p) pols.resize(p+1);
                 pols[p].push_back(1);
@@ -362,7 +362,7 @@ namespace POL{
             pols[p]=pols[lc]*pols[rc];
             pols[p].pop_back();
         }
-        void solveEval(int p,int l,int r,POL now,std::vector<u32> &res,std::vector<POL> &pols) const {
+        void solveEval(int p,int l,int r,Poly now,std::vector<u32> &res,std::vector<Poly> &pols) const {
             if(l==r){
                 res[l]=now[0];
                 return;
@@ -377,8 +377,8 @@ namespace POL{
             if(x.empty()) return std::vector<u32>();
             int n=std::max(size(),(int)x.size());
             int m=x.size();
-            POL pol=*this;
-            std::vector<POL> pols;
+            Poly pol=*this;
+            std::vector<Poly> pols;
             std::vector<u32> res;
             x.resize(n),res.resize(n);
             initVals(1,0,n-1,x,pols);
@@ -387,9 +387,9 @@ namespace POL{
             return res;
         }
 
-        POL solveInterp(int p,int l,int r,std::vector<u32> &y,std::vector<u32> &vals,std::vector<POL> &pols) const {
+        Poly solveInterp(int p,int l,int r,std::vector<u32> &y,std::vector<u32> &vals,std::vector<Poly> &pols) const {
             if(l==r){
-                POL res;
+                Poly res;
                 res.push_back((u64)y[l]*invNum(vals[l])%NTTp);
                 return res;
             }
@@ -401,10 +401,10 @@ namespace POL{
                 clear();
                 return;
             }
-            std::vector<POL> pols;
+            std::vector<Poly> pols;
             std::vector<u32> vals;
             mul(1,0,x.size()-1,x,pols);
-            POL H=pols[1];
+            Poly H=pols[1];
             vals=H.deriv().eval(x);
             *this=solveInterp(1,0,x.size()-1,y,vals,pols);
             resize(x.size());
@@ -428,7 +428,7 @@ namespace POL{
             }
         }
 
-        forceIl friend void ntt2(POL &A,POL &B,char flg){ 
+        forceIl friend void ntt2(Poly &A,Poly &B,char flg){ 
             int i,l,j,k,lg;
             u32 w,t;
             for(i=0;i<NTTLen;++i) if(i<rev[i]) std::swap(A.items[i],A.items[rev[i]]),std::swap(B.items[i],B.items[rev[i]]);
@@ -473,7 +473,7 @@ namespace POL{
             }
         }
 
-        forceIl friend void qntt2(POL &A,POL &B,char flg){
+        forceIl friend void qntt2(Poly &A,Poly &B,char flg){
             int i,l,j,k,lg;
             u32 w,t;
             if(flg==0){
@@ -509,7 +509,7 @@ namespace POL{
         INIT(){init();}
     }INITS;
 };
-#define Poly POL::POL
+using POL::Poly;
 
 Poly A,B;
 char s[200000];

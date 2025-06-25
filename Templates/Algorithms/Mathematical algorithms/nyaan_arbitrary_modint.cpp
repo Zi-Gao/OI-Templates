@@ -71,8 +71,8 @@ struct ArbitraryLazyMontgomeryModIntBase {
         Int x = get(), y = get_mod(), u = 1, v = 0;
         while (y > 0) {
             Int t = x / y;
-            swap(x -= t * y, y);
-            swap(u -= t * v, v);
+            std::swap(x -= t * y, y);
+            std::swap(u -= t * v, v);
         }
         return mint{u};
     }

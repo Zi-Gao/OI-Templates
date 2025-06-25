@@ -1,6 +1,3 @@
-#include <iostream>
-using namespace std;
-
 template <typename Int, typename UInt, typename Long, typename ULong, int id>
 struct ArbitraryLazyMontgomeryModIntBase {
     using mint = ArbitraryLazyMontgomeryModIntBase;
@@ -68,17 +65,6 @@ struct ArbitraryLazyMontgomeryModIntBase {
             mul *= mul, n >>= 1;
         }
         return ret;
-    }
-
-    friend ostream &operator<<(ostream &os, const mint &b) {
-        return os << b.get();
-    }
-
-    friend istream &operator>>(istream &is, mint &b) {
-        Long t;
-        is >> t;
-        b = ArbitraryLazyMontgomeryModIntBase(t);
-        return (is);
     }
 
     mint inverse() const {

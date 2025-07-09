@@ -1,43 +1,25 @@
-const int SAM_SIGMA=26,SAM_SIZ=100010;
+const int N=1000010;
 
 struct SAM{
-	struct state{
-		int len,link,next[SAM_SIGMA];
-	}sta[SAM_SIZ<<1];
-	int cnt,last,pos[SAM_SIZ];
-	void init(){
-		sta[1].len=sta[1].link=0;
-		memset(sta[cnt=last=1].next,0,sizeof(sta[0].next));
-	}
-	int getNode(){
-		++cnt;
-		memset(sta[cnt].next,0,sizeof(sta[cnt].next));
-		return cnt;
-	}
-	void add(char c){
-		register int p=last,q,u,v;
-		sta[u=getNode()].len=sta[last].len+1;
-		while(p&&!sta[p].next[c]){
-			sta[p].next[c]=u;
-			p=sta[p].link;
-		}
-		if(p==0) sta[u].link=1;
-		else{
-			q=sta[p].next[c];
-			if(sta[p].len+1==sta[q].len) sta[u].link=q;
-			else{
-				v=++cnt;
-				sta[v]=sta[q];
-				sta[v].len=sta[p].len+1;
-				while(p&&sta[p].next[c]==q){
-					sta[p].next[c]=v;
-					p=sta[p].link;
-				}
-				sta[q].link=sta[u].link=v;
-			}
-		}
-		last=u;
-	}
-
-    SAM(){init();}
-};
+    int len[N<<1],link[N<<1],nxt[N<<1][26],lat,cnt;
+    void init(){
+        lat=cnt=1;
+    }
+    int add(char c){
+        int u=++cnt,v,p=lat,q;
+        len[u]=len[lat]+1;
+        while(p&&!nxt[p][c]) nxt[p][c]=u,p=link[p];
+        if(!p) link[u]=1;
+        else{
+            q=nxt[p][c];
+            if(len[p]+1==len[q]) link[u]=q;
+            else{
+                link[v=++cnt]=link[q],len[v]=len[p]+1;
+                link[u]=link[q]=v;
+                memcpy(nxt[v],nxt[q],sizeof(nxt[v]));
+                while(p&&nxt[p][c]==q) nxt[p][c]=v,p=link[p];
+            }
+        }
+        return lat=u;
+    }
+}sam;

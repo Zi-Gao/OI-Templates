@@ -8,5 +8,4 @@ struct UF{
     }
     inline __attribute((always_inline)) int find(int u){while(u!=par[u]) u=fold<2>(u);return u;}
 	void merge(int i,int j){par[find(i)]=find(j);}
-	void clear(){for(int i=1;i<UFDS_SIZE;i++) par[i]=i;}
 };

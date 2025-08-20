@@ -85,8 +85,7 @@ struct ArbitraryLazyMontgomeryModIntBase {
     static UInt get_mod() { return mod; }
 };
 
-template <int id>
-using mint = ArbitraryLazyMontgomeryModIntBase<int, unsigned int, long long, unsigned long long, id>;
-
-template <int id>
-using mint64 = ArbitraryLazyMontgomeryModIntBase<long long, unsigned long long, __int128_t, __uint128_t, id>;
+template <int id> using mint_id = ArbitraryLazyMontgomeryModIntBase<int, unsigned int, long long, unsigned long long, id>;
+template <int id> using mint64_id = ArbitraryLazyMontgomeryModIntBase<long long, unsigned long long, __int128_t, __uint128_t, id>;
+using mint=mint_id<0>;
+using mint64=mint64_id<0>;

@@ -2,7 +2,7 @@
 // #define ONLINE_JUDGE
 #define INPUT_int int
 #define OUTPUT_int long long
-INPUT_int read(){register INPUT_int x=0;register char f=0,c=getchar();while(c<'0'||'9'<c)f=(c=='-'),c=getchar();while('0'<=c&&c<='9')x=(x<<3)+(x<<1)+(c&15),c=getchar();return f?-x:x;}void print(OUTPUT_int x){if(x<0)x=-x,putchar('-');if(x>9)print(x/10);putchar(x%10^48);return;}
+INPUT_int read(){INPUT_int x=0;char f=0,c=getchar();while(c<'0'||'9'<c)f=(c=='-'),c=getchar();while('0'<=c&&c<='9')x=(x<<3)+(x<<1)+(c&15),c=getchar();return f?-x:x;}void print(OUTPUT_int x){if(x<0)x=-x,putchar('-');if(x>9)print(x/10);putchar(x%10^48);return;}
 
 #define FLOW_TYPE long long
 
@@ -26,7 +26,7 @@ namespace MAXFLOW{
 	int dep[NNNN],nowCur[NNNN],n,s,t;
 	int bfs(){
 		std::queue<int> Q;
-		register int i,u,v;
+		int i,u,v;
 		for(i=1;i<=n;++i) dep[i]=nowCur[i]=0;
 		dep[s]=1;
 		Q.push(s);
@@ -45,8 +45,8 @@ namespace MAXFLOW{
 
 	FLOW_TYPE dfs(int u,FLOW_TYPE flow,int t){
 		if((u==t)||(!flow)) return flow;
-		register int v;
-		register FLOW_TYPE cp,fl,d,res=0;
+		int v;
+		FLOW_TYPE cp,fl,d,res=0;
 		for(;nowCur[u]<e[u].size();){
 			auto &edge=e[u][nowCur[u]++];
 			v=edge.to;
@@ -64,7 +64,7 @@ namespace MAXFLOW{
 
 	FLOW_TYPE get(int _s,int _t,int _n){
 		s=_s,t=_t,n=_n;
-		register FLOW_TYPE maxflow=0;
+		FLOW_TYPE maxflow=0;
 		while(bfs())
 			maxflow+=dfs(s,FLOW_INF,t);
 		return maxflow;
@@ -77,7 +77,7 @@ int main(){
 	freopen("name.out", "w", stdout);
 	#endif
 
-    register int i,u,v,cap;
+    int i,u,v,cap;
     int n=read();
     int m=read();
     int s=read();

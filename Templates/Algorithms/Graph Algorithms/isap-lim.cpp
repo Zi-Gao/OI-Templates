@@ -2,7 +2,7 @@
 // #define ONLINE_JUDGE
 #define INPUT_int int
 #define OUTPUT_int long long
-INPUT_int read(){register INPUT_int x=0;register char f=0,c=getchar();while(c<'0'||'9'<c)f=(c=='-'),c=getchar();while('0'<=c&&c<='9')x=(x<<3)+(x<<1)+(c&15),c=getchar();return f?-x:x;}void print(OUTPUT_int x){if(x<0)x=-x,putchar('-');if(x>9)print(x/10);putchar(x%10^48);return;}
+INPUT_int read(){INPUT_int x=0;char f=0,c=getchar();while(c<'0'||'9'<c)f=(c=='-'),c=getchar();while('0'<=c&&c<='9')x=(x<<3)+(x<<1)+(c&15),c=getchar();return f?-x:x;}void print(OUTPUT_int x){if(x<0)x=-x,putchar('-');if(x>9)print(x/10);putchar(x%10^48);return;}
 
 #define FLOW_TYPE long long
 
@@ -27,8 +27,8 @@ namespace MAXFLOW{
 
 	FLOW_TYPE sap(int u,FLOW_TYPE flow){
 		if(u==t||!flow) return flow;
-		register int v;
-		register FLOW_TYPE cp,fl,d,res=0;
+		int v;
+		FLOW_TYPE cp,fl,d,res=0;
 		for(;nowCur[u]<e[u].size();++nowCur[u]){
 			auto &edge=e[u][nowCur[u]];
 			v=edge.to,cp=edge.cap,fl=edge.flow;
@@ -42,9 +42,9 @@ namespace MAXFLOW{
 		return res;
 	}
 
-	FLOW_TYPE get(int _s,int _t,int _n,register FLOW_TYPE res=0){
+	FLOW_TYPE get(int _s,int _t,int _n,FLOW_TYPE res=0){
 		s=_s,t=_t,n=_n;
-		register int i;
+		int i;
 		for(i=1;i<=n;++i) dis[i]=cnt[i]=0;
 		while(dis[s]<n){
 			for(i=1;i<=n;++i) nowCur[i]=0;
@@ -63,8 +63,8 @@ void addEdge(int u,int v,FLOW_TYPE lo,FLOW_TYPE up){
 }
 
 FLOW_TYPE get(int s,int t,int n){
-    register int i,ss=n+1,tt=n+2;
-    register FLOW_TYPE cntF=0,res;
+    int i,ss=n+1,tt=n+2;
+    FLOW_TYPE cntF=0,res;
     for(i=1;i<=n;++i)
         if(sum[i]>0) addEdge(ss,i,sum[i]),cntF+=sum[i];
         else if(sum[i]<0) addEdge(i,tt,-sum[i]);
@@ -85,7 +85,7 @@ int main(){
 	freopen("name.out", "w", stdout);
 	#endif
 
-    register int i,ss,tt,u,v,lo,up,res;
+    int i,ss,tt,u,v,lo,up,res;
     
     int n=read();
     int m=read();

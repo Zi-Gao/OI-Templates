@@ -2,7 +2,7 @@
 // #define ONLINE_JUDGE
 #define INPUT_int int
 #define OUTPUT_int long long
-INPUT_int read(){register INPUT_int x=0;register char f=0,c=getchar();while(c<'0'||'9'<c)f=(c=='-'),c=getchar();while('0'<=c&&c<='9')x=(x<<3)+(x<<1)+(c&15),c=getchar();return f?-x:x;}void print(OUTPUT_int x){if(x<0)x=-x,putchar('-');if(x>9)print(x/10);putchar(x%10^48);return;}
+INPUT_int read(){INPUT_int x=0;char f=0,c=getchar();while(c<'0'||'9'<c)f=(c=='-'),c=getchar();while('0'<=c&&c<='9')x=(x<<3)+(x<<1)+(c&15),c=getchar();return f?-x:x;}void print(OUTPUT_int x){if(x<0)x=-x,putchar('-');if(x>9)print(x/10);putchar(x%10^48);return;}
 
 #define FLOW_TYPE long long
 
@@ -28,8 +28,8 @@ namespace MAXFLOW{
     std::bitset<NNNN> vis;
 
     bool spfa(){
-        register int i,u,v;
-        register FLOW_TYPE cp,fl,w;
+        int i,u,v;
+        FLOW_TYPE cp,fl,w;
         std::queue<int> Q;
         for(i=0;i<=n;++i) dis[i]=FLOW_INF,vis[i]=0;
         dis[s]=0,Q.push(s);
@@ -51,8 +51,8 @@ namespace MAXFLOW{
 	FLOW_TYPE sap(int u,FLOW_TYPE flow){
 		if(u==t||!flow) return flow;
         vis[u]=1;
-		register int v;
-		register FLOW_TYPE cp,fl,w,d,res=0;
+		int v;
+		FLOW_TYPE cp,fl,w,d,res=0;
 		for(;nowCur[u]<e[u].size();++nowCur[u]){
 			auto &edge=e[u][nowCur[u]];
 			v=edge.to,cp=edge.cap,fl=edge.flow,w=edge.w;
@@ -64,10 +64,10 @@ namespace MAXFLOW{
 		return res;
 	}
 
-	std::pair<FLOW_TYPE,FLOW_TYPE> get(int _s,int _t,int _n,register FLOW_TYPE resFlow=0,register FLOW_TYPE resCost=0){
+	std::pair<FLOW_TYPE,FLOW_TYPE> get(int _s,int _t,int _n,FLOW_TYPE resFlow=0,FLOW_TYPE resCost=0){
 		s=_s,t=_t,n=_n;
-		register FLOW_TYPE flow;
-		register int i;
+		FLOW_TYPE flow;
+		int i;
 		while(spfa()){
 			for(i=0;i<=n;++i) nowCur[i]=vis[i]=0;
 			resFlow+=(flow=sap(s,FLOW_INF));
@@ -83,7 +83,7 @@ int main(){
 	freopen("name.out", "w", stdout);
 	#endif
 
-    register int i,u,v,cap,w;
+    int i,u,v,cap,w;
     int n=read();
     int m=read();
     int s=read();

@@ -1,12 +1,12 @@
 void zfunc(int n,char *s,int *z){
-    register int i,l,r;
-    for(i=2,l=1,r=1;i<=n;++i){
-        if(i<=r&&z[i-l+1]<r-i+1) z[i]=z[i-l+1];
+    int i,l,r;
+    for(i=1,l=r=0;i<n;++i){
+        if(z[i-l]<r-i) z[i]=z[i-l];
         else{
-            z[i]=std::max(0,r-i+1);
-            while(i+z[i]<=n&&s[i+z[i]]==s[1+z[i]]) ++z[i];
+            z[i]=std::max(0,r-i);
+            while(i+z[i]<n&&s[i+z[i]]==s[z[i]]) ++z[i];
         }
-        if(i+z[i]-1>r) l=i,r=i+z[i]-1;
+        if(i+z[i]>r) l=i,r=i+z[i];
     }
     return;
 }

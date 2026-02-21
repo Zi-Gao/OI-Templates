@@ -1,75 +1,77 @@
 #include<bits/stdc++.h>
+
+// #define NOBUG
 // #define ONLINE_JUDGE
-#define INPUT_int int
-#define OUTPUT_int long long
-INPUT_int read(){INPUT_int x=0;char f=0,c=getchar();while(c<'0'||'9'<c)f=(c=='-'),c=getchar();while('0'<=c&&c<='9')x=(x<<3)+(x<<1)+(c&15),c=getchar();return f?-x:x;}void print(OUTPUT_int x){if(x<0)x=-x,putchar('-');if(x>9)print(x/10);putchar(x%10^48);return;}
+#define il inline __attribute((always_inline)) 
 
-#define FLOW_TYPE long long
+#ifdef NOBUG
+#define dbg(...) fprintf (stderr, __VA_ARGS__)
+#else
+#define dbg(...) void()
+#endif
 
-const int NNNN=100010;
-const FLOW_TYPE FLOW_INF=0x3f3f3f3f3f3f3f3fll;
+using u32=unsigned int;
+using i64=long long;
+using u64=unsigned long long;
 
+#define getu(x) typename std::make_unsigned<x>::type
+template<typename T=int>il T read(){getu(T)x=0;char c=getchar(),f=0;while(c<'0'||'9'<c)f=(c=='-'),c=getchar();while('0'<=c&&c<='9')x=x*10+(c&15),c=getchar();return f?-x:x;}char ous[50];template<typename T>il void print(const T&x){if(x==0)return putchar('0'),void();getu(T)y=x;if(x<0)y=-y,putchar('-');char*p=ous;while(y){*(p++)=y%10;y/=10;}while(p>ous)putchar(*(--p)|'0');}
+
+const int N=510;
 struct EDGE{
-	int to,invE;
-	FLOW_TYPE flow,cap;
+    int to,iv;
+    i64 fl,cp;
 };
+std::vector<EDGE> e[N];
 
-std::vector<EDGE> e[NNNN];
-
-void addEdge(int u,int v,FLOW_TYPE cap){
-	e[u].push_back((EDGE){v,e[v].size(),0,cap});
-	e[v].push_back((EDGE){u,e[u].size()-1,0,0});
-	return;
+void addEdge(int u,int v,int cp){
+	e[u].push_back({v,(int)e[v].size(),0,cp});
+	e[v].push_back({u,(int)e[u].size()-1,0,0});
 }
 
 namespace MAXFLOW{
-	int dep[NNNN],nowCur[NNNN],n,s,t;
-	int bfs(){
+	const i64 INF=0x3f3f3f3f3f3f3f3fll;
+	int s,t,n;
+	int dep[N],nowc[N];
+
+	bool bfs(){
+		int i,u;
 		std::queue<int> Q;
-		int i,u,v;
-		for(i=1;i<=n;++i) dep[i]=nowCur[i]=0;
+		for(i=0;i<=n;++i) dep[i]=nowc[i]=0;
 		dep[s]=1;
 		Q.push(s);
 		while(!Q.empty()){
-			u=Q.front();
-			Q.pop();
-			for(auto edge:e[u]){
-				if(!dep[v=edge.to]&&edge.cap>edge.flow){
-					dep[v]=dep[u]+1;
-					Q.push(v);
-				}
-			}
+			u=Q.front(),Q.pop();
+			for(auto [v,_,fl,cp]:e[u]) if(fl<cp&&!dep[v]) dep[v]=dep[u]+1,Q.push(v); 
 		}
 		return dep[t];
 	}
 
-	FLOW_TYPE dfs(int u,FLOW_TYPE flow,int t){
-		if((u==t)||(!flow)) return flow;
-		int v;
-		FLOW_TYPE cp,fl,d,res=0;
-		for(;nowCur[u]<e[u].size();){
-			auto &edge=e[u][nowCur[u]++];
-			v=edge.to;
-			cp=edge.cap;
-			fl=edge.flow;
-			if(dep[v]==dep[u]+1&&(d=dfs(v,std::min(cp-fl,flow-res),t))){
-				res+=d;
-				edge.flow+=d;
-				e[v][edge.invE].flow-=d;
-				if(res==flow) return res;
+	i64 flow(int u,i64 f){
+		if(u==t||!f) return f;
+		i64 d=0,r=0;
+		while(nowc[u]<e[u].size()){
+			auto &[v,iv,fl,cp]=e[u][nowc[u]];
+			if(dep[v]==dep[u]+1&&(d=flow(v,std::min(f-r,cp-fl)))){
+				fl+=d;
+				e[v][iv].fl-=d;
+				r+=d;
+				if(r==f) return r;
 			}
+			nowc[u]++;
 		}
-		return res;
+		return r;
 	}
 
-	FLOW_TYPE get(int _s,int _t,int _n){
+	i64 get(int _s,int _t,int _n){
 		s=_s,t=_t,n=_n;
-		FLOW_TYPE maxflow=0;
+		i64 res=0;
 		while(bfs())
-			maxflow+=dfs(s,FLOW_INF,t);
-		return maxflow;
+			res+=flow(s,INF);
+		return res;
 	}
 }
+
 
 int main(){
 	#ifndef ONLINE_JUDGE
@@ -77,25 +79,18 @@ int main(){
 	freopen("name.out", "w", stdout);
 	#endif
 
-    int i,u,v,cap;
+    int i,u,v,cp;
     int n=read();
     int m=read();
     int s=read();
-    int t=read();
+	int t=read();
 
-    for(i=0;i<m;++i){
-        u=read();
-        v=read();
-        cap=read();
-        addEdge(u,v,cap);
-        addEdge(v,u,0);
+    while(m--){
+        u=read();v=read();cp=read();
+        addEdge(u,v,cp);
     }
 
-    print(MAXFLOW::get(s,t,n));
+	print(MAXFLOW::get(s,t,n));
 
-	#ifndef ONLINE_JUDGE
-	fclose(stdin);
-	fclose(stdout);
-	#endif
     return 0;
 }
